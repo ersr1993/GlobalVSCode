@@ -2,7 +2,7 @@
 namespace myMenu{
 using System;
 
-    class Main: Menu{
+    public class Main: Menu{
 
         public Main(string title): base(title) {
             this.commands.Clear();

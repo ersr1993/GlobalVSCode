@@ -2,11 +2,16 @@
 
 namespace someProject
 {
-    class Program
-    {
-        static void Main(string[] args)
+    using _menu = myMenu;
+    class Program{
+            static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-        }
-    }
+            _menu.Menu menu0;
+            //-
+            menu0 = new _menu.Main(" here we go  ");
+            //-
+            menu0.DisplayMenu();
+            // GoodByeText();
+        }	
+}
 }

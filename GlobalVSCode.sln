@@ -5,7 +5,7 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslMenu", "CslMenu\CslMenu.csproj", "{450455CB-3A44-4284-BDBD-17E9D391A4E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrashDir", "TrashDir\TrashDir.csproj", "{83BD96E1-B311-4249-9A7D-5808239B9DF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "someProject", "someProject\someProject.csproj", "{08ACCD4D-FBD8-41C1-8179-B0D014B60687}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,5 +44,17 @@ Global
 		{83BD96E1-B311-4249-9A7D-5808239B9DF0}.Release|x64.Build.0 = Release|Any CPU
 		{83BD96E1-B311-4249-9A7D-5808239B9DF0}.Release|x86.ActiveCfg = Release|Any CPU
 		{83BD96E1-B311-4249-9A7D-5808239B9DF0}.Release|x86.Build.0 = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|x64.Build.0 = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Debug|x86.Build.0 = Debug|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|x64.ActiveCfg = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|x64.Build.0 = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|x86.ActiveCfg = Release|Any CPU
+		{08ACCD4D-FBD8-41C1-8179-B0D014B60687}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

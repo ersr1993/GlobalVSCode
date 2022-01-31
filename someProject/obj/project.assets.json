@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net5.0": {}
+    "net5.0": {
+      "CslMenu/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/CslMenu.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CslMenu.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "CslMenu/1.0.0": {
+      "type": "project",
+      "path": "../CslMenu/CslMenu.csproj",
+      "msbuildProject": "../CslMenu/CslMenu.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net5.0": []
+    "net5.0": [
+      "CslMenu >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Emmanuel\\.nuget\\packages\\": {},
@@ -37,7 +56,11 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Projets\\CodingFolder\\GlobalVSCode\\CslMenu\\CslMenu.csproj": {
+              "projectPath": "D:\\Projets\\CodingFolder\\GlobalVSCode\\CslMenu\\CslMenu.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

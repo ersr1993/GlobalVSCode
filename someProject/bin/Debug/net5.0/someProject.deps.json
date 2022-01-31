@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "someProject/1.0.0": {
+        "dependencies": {
+          "CslMenu": "1.0.0"
+        },
+        "runtime": {
+          "someProject.dll": {}
+        }
+      },
+      "CslMenu/1.0.0": {
+        "runtime": {
+          "CslMenu.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "someProject/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CslMenu/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
