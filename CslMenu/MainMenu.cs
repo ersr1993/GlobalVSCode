@@ -1,9 +1,8 @@
 
 namespace myMenu{
 using System;
-using _cons=myConsole;
 
-    class Main: _cons.Menu{
+    class Main: Menu{
 
         public Main(string title): base(title) {
             this.commands.Clear();
