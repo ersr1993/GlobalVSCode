@@ -9,14 +9,15 @@ using System;
             this.commands.Add("one",First);
             this.commands.Add("two",Second);
             this.commands.Add("three",First);
-            FillContent();           
+            FillContent();    
+            DisplayMenu();       
         }
         private void First(){
             myMenu.Main nextMenu;
             //-
             nextMenu = new Main("second");
             //-
-            nextMenu.DisplayMenu();
+            //nextMenu.DisplayMenu();
         }
         private void Second(){
 
