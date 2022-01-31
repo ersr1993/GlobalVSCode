@@ -1,0 +1,15 @@
+namespace Displayable{
+    public static class MyDisplayable{
+
+        public static string SayHello()
+        {
+            return "hello ";
+        }
+	
+	public static string SomeFunc()
+	{
+		return "someFunc";
+	}
+	
+    }
+}

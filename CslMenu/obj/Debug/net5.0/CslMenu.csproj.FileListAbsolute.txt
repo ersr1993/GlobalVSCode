@@ -1,0 +1,16 @@
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.csprojAssemblyReference.cache
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.AssemblyInfoInputs.cache
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.AssemblyInfo.cs
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.csproj.CoreCompileInputs.cache
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.exe
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.deps.json
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.runtimeconfig.json
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.runtimeconfig.dev.json
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.dll
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\ref\CslMenu.dll
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\bin\Debug\net5.0\CslMenu.pdb
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.dll
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\ref\CslMenu.dll
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.pdb
+D:\Projets\CodingFolder\GlobalVSCode\CslMenu\obj\Debug\net5.0\CslMenu.genruntimeconfig.cache
