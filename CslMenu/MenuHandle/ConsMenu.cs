@@ -85,15 +85,15 @@ namespace myMenu{
                     { 
                         currentSelected ++;
                         FillContent();
-                        userAct = select.stay;
                     }
+                        userAct = select.stay;
                 break;
                 case (System.ConsoleKey.UpArrow) :
                     if( currentSelected>0) {
                         currentSelected =(currentSelected-1);
                         FillContent();
+                        }
                         userAct = select.stay;
-                    }
                     break;
                 case System.ConsoleKey.Enter:
                     callMe.Invoke();
