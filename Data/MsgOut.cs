@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MyConsMenu
+namespace VsConsole.Data
 {
     public static class MsgOut
     {
@@ -11,7 +11,7 @@ namespace MyConsMenu
         {
             return "\n -------------- \n";
         }
-        public static string FooterMsg()
+        public static string GetMenuActionsInstruction()
         {
             string footerMsg;
             footerMsg = "\n Enter  ...\n " +
