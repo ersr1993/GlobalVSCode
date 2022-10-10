@@ -1,4 +1,5 @@
-﻿namespace VsConsole.Logic.PageConsole
+﻿#nullable disable
+namespace VsConsole.Logic.PageConsole
 {
     using System;
     using VsConsole.Data;
