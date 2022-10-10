@@ -1,22 +1,25 @@
-﻿namespace MyConsMenu
+﻿namespace VsConsole
 {
 
     using System;
+    using VsConsole.Logic.PageConsole;
+    using VsConsole.Data;
+
     public static class MyConsole
     {
         public static ConsoleKey DisplayPage(IPage somePage)
         {
 
             Console.Clear();
-            Console.Title = somePage.title;
-            MyWriteLine(somePage.title);
+            Console.Title = somePage._title;
+            MyWriteLine(somePage._title);
 
             AddDottedLines();
-            MyWriteLine(somePage.content);
+            MyWriteLine(somePage._body);
             AddDottedLines();
             
-            MyWriteLine( $"{somePage.footer} \n \n \n  ",ConsoleColor.DarkMagenta); // Je l'aime Bien
-            MyWriteLine( $"{MsgOut.FooterMsg()} ",ConsoleColor.DarkCyan );
+            MyWriteLine( $"{somePage._footer} \n \n \n  ",ConsoleColor.DarkMagenta); // Je l'aime Bien
+            MyWriteLine( $"{MsgOut.GetMenuActionsInstruction()} ",ConsoleColor.DarkCyan );
             //-
             ConsoleKeyInfo myChar;
             myChar = Console.ReadKey();
