@@ -18,11 +18,11 @@ namespace VsConsole.Logic
 
     public class NavigationLogic
     {
-        private IMenu _menu;
+        private AMenu _menu;
         private Dictionary<ConsoleKey, Func<NavigationChoice>> _menuButtonsActions;
         private static NavigationChoice _userKeyDown; // static allows cascadate quit
 
-        internal NavigationLogic(IMenu menu)
+        internal NavigationLogic(AMenu menu)
         {
             _menu = menu;
             _menu.SelectedFunctionId = 0;
@@ -63,7 +63,7 @@ namespace VsConsole.Logic
             userQuits = _userKeyDown == NavigationChoice.quit;
             if (userQuits)
             {
-                _userKeyDown =  NavigationChoice.quit;
+                _userKeyDown = NavigationChoice.quit;
             }
             else
             {
@@ -79,9 +79,17 @@ namespace VsConsole.Logic
             }
             catch (Exception e)
             {
-                MyConsole.Say($"\n \n  *** *** *** ERROR : *** *** *** \n " +
-                    $"-  {e.Message} \n\n ", ConsoleColor.Red);
-                MyConsole.SayAndWait($" \n - StackTrace : \n  {e.StackTrace}", ConsoleColor.DarkMagenta);
+                string errorMessage;
+                errorMessage = $"\n \n  *** *** *** ERROR : *** *** *** \n " +
+                               $"-  {e.Message} \n\n ";
+                _menu.AddFooterMessage(errorMessage, ConsoleColor.Red);
+#if DEBUG
+                string fullInfo;
+                fullInfo = $" \n - StackTrace : \n  " +
+                            $"{e.StackTrace}";
+                MyConsole.Say(errorMessage, ConsoleColor.Red);
+                MyConsole.SayAndWait(fullInfo, ConsoleColor.DarkYellow);
+#endif
             }
 
             return onKeyDown;
@@ -89,20 +97,25 @@ namespace VsConsole.Logic
         private NavigationChoice InokeNavigation(ConsoleKey usrInput)
         {
             Func<NavigationChoice> selectedFunction;
+            NavigationChoice choice;
 
-            var temp = (from kpv in _menuButtonsActions
-                        where kpv.Key == usrInput
-                        select kpv.Value).ToArray();
+            Func<NavigationChoice>[] temp = (from kpv in _menuButtonsActions
+                                             where kpv.Key == usrInput
+                                             select kpv.Value).ToArray();
             try
             {
                 selectedFunction = temp[0];
+                choice = selectedFunction.Invoke();
             }
             catch (IndexOutOfRangeException ex)
             {
-                throw new InvalidOperationException($"Touche '{usrInput}' non reconnue");
+                string message;
+                message = $"Touche '{usrInput}' non reconnue";
+                MyConsole.SayAndWait(message, ConsoleColor.DarkYellow);
+                choice = NavigationChoice.stay;
             }
 
-            return selectedFunction.Invoke();
+            return choice;
         }
         private NavigationChoice QuitProgram()
         {
@@ -114,9 +127,10 @@ namespace VsConsole.Logic
         }
         private NavigationChoice InvokeFunc()
         {
-            NavigationChoice userAct = NavigationChoice.quit;
-            //_loadedDelegate.Invoke();
-            _menu.InvokeAction();
+            NavigationChoice userAct;
+
+            userAct = NavigationChoice.quit;
+            _menu.LoadedDelegate?.Invoke();
             if (_userKeyDown != NavigationChoice.quit)
             {
                 userAct = NavigationChoice.nextMenu;

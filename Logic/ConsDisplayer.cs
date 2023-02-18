@@ -4,6 +4,7 @@
     using System;
     using VsConsole.Logic.PageConsole;
     using VsConsole.Data;
+    using System.Collections.Generic;
 
     public static class MyConsole
     {
@@ -17,13 +18,23 @@
             AddDottedLines();
             MyWriteLine(somePage._body);
             AddDottedLines();
-            
-            MyWriteLine( $"{somePage._footer} \n \n \n  ",ConsoleColor.DarkMagenta); // Je l'aime Bien
+
+            //MyWriteLine( $"{somePage._footer} \n \n \n  ",ConsoleColor.DarkMagenta); // Je l'aime Bien
+
+            WriteLines(somePage._footerItems);
+            //MyWriteLine( $"{somePage._footer} \n \n \n  ",ConsoleColor.DarkMagenta); // Je l'aime Bien
             MyWriteLine( $"{MsgOut.GetMenuActionsInstruction()} ",ConsoleColor.DarkCyan );
             //-
             ConsoleKeyInfo myChar;
             myChar = Console.ReadKey();
             return myChar.Key;
+        }
+        private static void WriteLines(List<(string msg,ConsoleColor? color)> lines)
+        {
+            foreach (var line in lines)
+            {
+                Console.WriteLine(line.Item1,line.Item2);
+            }
         }
         private static void MyWriteLine(string someStr, ConsoleColor myColor=ConsoleColor.White)
         {

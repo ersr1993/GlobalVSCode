@@ -15,30 +15,29 @@
 
         protected Dictionary<string, Action> _commandList;
         protected NavigationLogic _navigator;
-        protected Action? _loadedDelegate;
+        internal Action? LoadedDelegate { get; private set; }
 
+        private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Blue;
 
-        public AMenu(string someTitle="Menu")
+        public AMenu(string someTitle = "Menu")
         {
             _commandList = new Dictionary<string, Action>();
             _navigator = new NavigationLogic(this);
             _title = someTitle;
+            _footerItems = new List<(string, ConsoleColor?)>();
         }
 
         public void AddCommand(Action myDelegateFunction)
         {
-            string name;
-            name = myDelegateFunction.Method.Name;
-
-            AddCommand(name, myDelegateFunction);
+            string commandLabel;
+            commandLabel = myDelegateFunction.Method.Name;
+            AddCommand(commandLabel, myDelegateFunction);
         }
         public void AddCommand(string name, Action myDelegateFunction)
         {
             string cmdName;
-
             cmdName = $"{GetIncrementalId()}{name}";
             _commandList.Add(cmdName, myDelegateFunction);
-
             RefreshSelection(SelectedFunctionId);
         }
         private string GetIncrementalId()
@@ -78,9 +77,14 @@
                 RefreshSelection(SelectedFunctionId);
             }
         }
+
         public void AddFooterMessage<T>(IEnumerable<T> objects) where T : class
         {
-            _footer += ObjToString.Convert(objects);
+            string footerItem;
+
+            footerItem = ObjToString.Convert(objects);
+
+            AddFooterMessage(footerItem);
         }
         public void AddFooterMessage(DataTable dt)
         {
@@ -89,12 +93,25 @@
             stringDataTable = ObjToString.Convert(dt);
             AddFooterMessage(stringDataTable);
         }
-        public void AddFooterMessage(string footerMessage)
+        public void AddFooterMessage(string footerItem, ConsoleColor color)
         {
-            _footer += string.IsNullOrEmpty(footerMessage)
-                ? string.Empty
-                : $"{footerMessage}\n";
+            (string, ConsoleColor) line;
+            line = (footerItem, color);
+            _footerItems.Add(line);
         }
+        public void AddFooterMessage(string message)
+        {
+            (string, ConsoleColor?) line;
+            line = (message, _FOOTER_DEFAULTCOLOR);
+            _footerItems?.Add(line);
+        }
+        //public void AddFooterMessage(string footerMessage)
+        //{
+        //    _footer += string.IsNullOrEmpty(footerMessage)
+        //        ? string.Empty
+        //        : $"{footerMessage}\n";
+        //}
+
         public float AskUserFloat(string messageToDisplay)
         {
             string outputAsString;
@@ -116,6 +133,7 @@
 
             return output;
         }
+
         private void RefreshSelection(int selLine)
         {
             _body = string.Empty;
@@ -128,16 +146,16 @@
 
                 if (IsSelectedId(lineId))
                 {
-                    _loadedDelegate = _commandList.Values.ElementAt(lineId);
+                    LoadedDelegate = _commandList.Values.ElementAt(lineId);
                 }
 
                 lineId++;
             }
         }
-        public void InvokeAction()
-        {
-            _loadedDelegate?.Invoke();
-        }
+        //internal void InvokeAction()
+        //{
+        //    LoadedDelegate?.Invoke();
+        //}
         private bool IsSelectedId(int lineId)
         {
             return lineId == SelectedFunctionId;
@@ -161,5 +179,6 @@
         {
             return this._commandList.Count;
         }
+
     }
 }
