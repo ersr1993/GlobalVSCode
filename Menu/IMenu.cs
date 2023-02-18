@@ -9,6 +9,7 @@ namespace VsConsole
         void AddCommand(string name, Action myDelegateFunction);
         int CountCommands();
         void AddFooterMessage(string footerMessage);
+        void Open();
         //void RefreshSelection(int selectedLine);
         void InvokeAction();
     }

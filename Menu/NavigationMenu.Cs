@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VsConsole.Logic.PageConsole;
 
+
 namespace VsConsole.Logic
 {
     internal enum NavigationChoice
@@ -79,7 +80,7 @@ namespace VsConsole.Logic
             catch (Exception e)
             {
                 MyConsole.Say($"\n \n  *** *** *** ERROR : *** *** *** \n " +
-                    $"-  {e.Message} + \n\n ", ConsoleColor.Red);
+                    $"-  {e.Message} \n\n ", ConsoleColor.Red);
                 MyConsole.SayAndWait($" \n - StackTrace : \n  {e.StackTrace}", ConsoleColor.DarkMagenta);
             }
 

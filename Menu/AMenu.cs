@@ -6,6 +6,8 @@
     using System.Data;
     using VsConsole.Logic.PageConsole;
     using VsConsole.Logic;
+    using System.Threading.Tasks;
+    using Newtonsoft.Json.Linq;
 
     public abstract class AMenu : APage, IMenu
     {
@@ -14,23 +16,60 @@
         protected Dictionary<string, Action> _commandList;
         protected NavigationLogic _navigator;
         protected Action? _loadedDelegate;
-        public AMenu()
+
+
+        public AMenu(string someTitle="Menu")
         {
             _commandList = new Dictionary<string, Action>();
             _navigator = new NavigationLogic(this);
-            _title = GetType().ToString();
-        }
-        public AMenu(string someTitle) : this()
-        {
             _title = someTitle;
         }
 
+        public void AddCommand(Action myDelegateFunction)
+        {
+            string name;
+            name = myDelegateFunction.Method.Name;
+
+            AddCommand(name, myDelegateFunction);
+        }
         public void AddCommand(string name, Action myDelegateFunction)
         {
-            _commandList.Add(name, myDelegateFunction);
+            string cmdName;
+
+            cmdName = $"{GetIncrementalId()}{name}";
+            _commandList.Add(cmdName, myDelegateFunction);
+
             RefreshSelection(SelectedFunctionId);
         }
-        public void DisplayLoop()
+        private string GetIncrementalId()
+        {
+            string id;
+            id = $"{_commandList.Count.ToString()} - ";
+            return id;
+        }
+        public void AddCommand(string name, string nomParametre, Action<string> myDelegateFunction)
+        {
+            Action FinalAction;
+
+
+            FinalAction = () =>
+            {
+                string inputVar;
+                inputVar = this.AskUserValue($"veuillez entrer {nomParametre}: ");
+                myDelegateFunction(inputVar);
+            };
+            _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
+            RefreshSelection(SelectedFunctionId);
+        }
+        public void AddCommand(string name, Action<string> myDelegateFunction, string inputVar)
+        {
+            Action FinalAction;
+            FinalAction = () => myDelegateFunction(inputVar);
+            _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
+            RefreshSelection(SelectedFunctionId);
+        }
+
+        public void Open()
         {
             while (_navigator.StayInLoop())
             {
@@ -39,11 +78,9 @@
                 RefreshSelection(SelectedFunctionId);
             }
         }
-        public void AddFooterMessage(string footerMessage)
+        public void AddFooterMessage<T>(IEnumerable<T> objects) where T : class
         {
-            _footer += string.IsNullOrEmpty(footerMessage)
-                ? string.Empty
-                : $"{footerMessage}\n";
+            _footer += ObjToString.Convert(objects);
         }
         public void AddFooterMessage(DataTable dt)
         {
@@ -52,10 +89,15 @@
             stringDataTable = ObjToString.Convert(dt);
             AddFooterMessage(stringDataTable);
         }
+        public void AddFooterMessage(string footerMessage)
+        {
+            _footer += string.IsNullOrEmpty(footerMessage)
+                ? string.Empty
+                : $"{footerMessage}\n";
+        }
         public float AskUserFloat(string messageToDisplay)
         {
             string outputAsString;
-
             outputAsString = AskUserValue(messageToDisplay);
             try
             {
@@ -65,8 +107,6 @@
             {
                 throw new FormatException("Impossible de convertir la valeur en entier");
             }
-
-
         }
         public string AskUserValue(string messageToDisplay)
         {
@@ -96,7 +136,7 @@
         }
         public void InvokeAction()
         {
-            _loadedDelegate.Invoke();
+            _loadedDelegate?.Invoke();
         }
         private bool IsSelectedId(int lineId)
         {
@@ -108,11 +148,11 @@
 
             if (isSelectedLine)
             {
-                outputString = $"{id} *  {lineOfText.ToUpper()}  ***";
+                outputString = $"* {lineOfText.ToUpper()}  ***";
             }
             else
             {
-                outputString = $"{id} -  {lineOfText.ToLower()}";
+                outputString = $"{lineOfText.ToLower()}";
             }
 
             return outputString;
