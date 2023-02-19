@@ -6,7 +6,6 @@
     using System.Data;
     using VsConsole.Logic.PageConsole;
     using VsConsole.Logic;
-    using System.Threading.Tasks;
 
     public abstract class AMenu : APage, IMenu
     {
@@ -177,6 +176,15 @@
         public int CountCommands()
         {
             return this._commandList.Count;
+        }
+
+        protected virtual void AddHelloWorld()
+        {
+            this.AddCommand(HelloWorld);
+        }
+        private void HelloWorld()
+        {
+            this.AddFooterMessage("Hello World !", ConsoleColor.Green);
         }
 
     }
