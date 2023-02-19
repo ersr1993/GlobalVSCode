@@ -7,7 +7,6 @@
     using VsConsole.Logic.PageConsole;
     using VsConsole.Logic;
     using System.Threading.Tasks;
-    using Newtonsoft.Json.Linq;
 
     public abstract class AMenu : APage, IMenu
     {
