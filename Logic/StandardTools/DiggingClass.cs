@@ -56,12 +56,16 @@ namespace StandardTools
             {
                 string value;
 
-                value = (string)field.GetValue(obj, null).ToString();
+                value = (string)field.GetValue(obj, null)?.ToString();
 
                 if (this.format.includeNullValues || value != null)
                 {
                     result.Add(value); // By default, doesn't return null values
                 }
+                else
+                {
+                    //result.Add(string.Empty);
+                };
             }
 
             return result;
@@ -78,7 +82,7 @@ namespace StandardTools
                 string property, value;
 
                 property = field.Name;
-                value = (string)field.GetValue(obj, null).ToString();
+                value = (string)field.GetValue(obj, null)?.ToString();
 
                 if (this.format.includeNullValues || value != null)
                 {

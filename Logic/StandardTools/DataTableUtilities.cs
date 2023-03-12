@@ -33,18 +33,10 @@ namespace StanadTools
         private void PopulateDataTable<T>(ref DataTable dt, List<T> myObjList)
         {
             //DiggingClass diggingClass;
-
-            //diggingClass = new DiggingClass()
-            //{
-            //    format = new DiggingFormatParameter()
-            //    {
-            //        includeNullValues = true,           // ** false by default **
-            //        includeNonPublicProperties = false  // as by default
-            //    }
-            //};
-
             List<string> propNames;
 
+
+            //diggingClass = BuildDiggingClass();
             propNames = _diggingClass.GetPropertyNames_List(myObjList[0]);
 
             foreach (string prop in propNames)
@@ -56,11 +48,28 @@ namespace StanadTools
                 AddRowForObject<T>(ref dt, obj);
             }
         }
+        //private DiggingClass BuildDiggingClass()
+        //{
+        //    DiggingFormatParameter format;
+        //    DiggingClass diggingClass;
+        //    format = new DiggingFormatParameter()
+        //    {
+        //        includeNullValues = false,         
+        //        includeNonPublicProperties = false  
+        //    };
+        //    diggingClass = new DiggingClass(format)
+        //    {
+        //    };
+
+        //    return diggingClass;
+        //}
         private void AddRowForObject<T>(ref DataTable dt, T obj)
         {
             DataRow row;
             List<string> valueList;
+            //DiggingClass diggingClass;
 
+            //diggingClass = BuildDiggingClass();
             row = dt.NewRow();
             valueList = _diggingClass.GetValues_List(obj);
             for (int i = 0; i < dt.Columns.Count; i++)

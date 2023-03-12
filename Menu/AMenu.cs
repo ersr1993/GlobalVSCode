@@ -6,6 +6,7 @@
     using System.Data;
     using VsConsole.Logic.PageConsole;
     using VsConsole.Logic;
+    using StanadTools;
 
     public abstract class AMenu : APage, IMenu
     {
@@ -13,13 +14,16 @@
 
         protected Dictionary<string, Action> _commandList;
         protected NavigationLogic _navigator;
+        private DataTableUtilities _dtU;
+
         internal Action? LoadedDelegate { get; private set; }
 
-        private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Blue;
+        private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Green;
 
         public AMenu(string someTitle = "Menu")
         {
             _commandList = new Dictionary<string, Action>();
+            _dtU = new DataTableUtilities();
             _navigator = new NavigationLogic(this);
             _title = someTitle;
             _footerItems = new List<(string, ConsoleColor?)>();
@@ -76,14 +80,6 @@
             }
         }
 
-        public void AddFooterMessage<T>(IEnumerable<T> objects) where T : class
-        {
-            string footerItem;
-
-            footerItem = ObjToString.Convert(objects);
-
-            AddFooterMessage(footerItem);
-        }
         public void AddFooterMessage(DataTable dt)
         {
             string stringDataTable;
@@ -103,13 +99,32 @@
             line = (message, _FOOTER_DEFAULTCOLOR);
             _footerItems?.Add(line);
         }
-        //public void AddFooterMessage(string footerMessage)
-        //{
-        //    _footer += string.IsNullOrEmpty(footerMessage)
-        //        ? string.Empty
-        //        : $"{footerMessage}\n";
-        //}
+        public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR,bool isStringList=false)
+        {
+            string fullLine;
+            const int lgth = 15;
+            const int margin = -(lgth + 5);
 
+            fullLine = string.Empty;
+            foreach (string message in messages)
+            {
+                string shortMsg;
+
+                shortMsg = message.Substring(0, Math.Min(lgth, message.Length));
+                if (shortMsg.Length == 0)
+                {
+                    shortMsg += "¤";
+                }
+                else if (!(shortMsg.Length == message.Length))
+                {
+                    shortMsg += "...";
+                }
+
+                fullLine += $"{shortMsg,margin}";
+            }
+
+            AddFooterMessage(fullLine, color);
+        }
         public float AskUserFloat(string messageToDisplay)
         {
             string outputAsString;
@@ -130,6 +145,16 @@
             output = MyConsole.AskTypeLine(messageToDisplay);
 
             return output;
+        }
+        public void AddFooterMessage<T>(IEnumerable<T> objects) where T : class
+        {
+            DataTable dt;
+            List<T> list;
+
+            list = objects.ToList();
+            dt = _dtU.ToDataTable<T>(list);
+
+            AddFooterMessage(dt);
         }
 
         private void RefreshSelection(int selLine)

@@ -38,28 +38,102 @@ namespace VsConsole.Logic
         }
         public static string Convert(DataTable dt)
         {
-            string stringRow;
-            const int colWidth = 15;
+            string stringRow = "";
+            List<List<string>> stringList;
 
-            stringRow = string.Empty;
-
-            for (int i = 0; i < dt.Columns.Count; i++)
+            stringList = BuildStringList(dt);
+            foreach(List<string> list in stringList)
             {
-                stringRow += $"{dt.Columns[i].ColumnName.ToUpper(),colWidth}";
-                stringRow += " ;  ";
-            };
-            stringRow += "\n";
-            foreach (DataRow r in dt.Rows)
-            {
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    stringRow += $"{r[i].ToString(),colWidth}";
-                    stringRow += " ;  ";
-                }
-                stringRow += "\n";
+                string line;
+                line = ToSingleLine(list);
+                stringRow += $"{line};\n ";
             }
 
             return stringRow;
+        }
+        private static List<List<string>> BuildStringList(DataTable dt)
+        {
+            List<List<string>> stringDT;
+            List<string> row;
+
+            stringDT = new List<List<string>>();
+
+            row = new List<string>();
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                string cell;
+                string columnTitle;
+                columnTitle = dt.Columns[i].ColumnName;
+                cell = $"{columnTitle.ToUpper()}";
+                row.Add(cell);
+            };
+            stringDT.Add(row);
+
+            foreach (DataRow r in dt.Rows)
+            {
+                row = new List<string>();
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    string cell;
+                    cell = $"{r[i].ToString()}";
+                    row.Add(cell);
+                }
+                stringDT.Add(row);
+            }
+
+            return stringDT;
+        }
+        //public static string Convert(DataTable dt)
+        //{
+        //    string stringRow;
+        //    const int colWidth = 15;
+
+        //    stringRow = string.Empty;
+
+        //    for (int i = 0; i < dt.Columns.Count; i++)
+        //    {
+        //        stringRow += $"{dt.Columns[i].ColumnName.ToUpper(),colWidth}";
+        //        stringRow += " ;  ";
+        //    };
+        //    stringRow += "\n";
+        //    foreach (DataRow r in dt.Rows)
+        //    {
+        //        for (int i = 0; i < dt.Columns.Count; i++)
+        //        {
+        //            stringRow += $"{r[i].ToString(),colWidth}";
+        //            stringRow += " ;  ";
+        //        }
+        //        stringRow += "\n";
+        //    }
+
+        //    return stringRow;
+        //}
+
+        public static string ToSingleLine(IEnumerable<string> messages)
+        {
+            string fullLine;
+            const int lgth = 15;
+            const int margin = -(lgth + 3);
+
+            fullLine = string.Empty;
+            foreach (string message in messages)
+            {
+                string shortMsg;
+
+                shortMsg = message.Substring(0, Math.Min(lgth, message.Length));
+                if (shortMsg.Length == 0)
+                {
+                    shortMsg += "¤";
+                }
+                else if (!(shortMsg.Length == message.Length))
+                {
+                    shortMsg += "...";
+                }
+
+                fullLine += $"{shortMsg,margin}";
+            }
+
+            return fullLine;
         }
         public static string Convert<T>(IEnumerable<T> objects) where T : class
         {
