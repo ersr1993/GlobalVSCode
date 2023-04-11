@@ -46,7 +46,7 @@ namespace VsConsole.Logic
             {
                 string line;
                 line = ToSingleLine(list);
-                stringRow += $"{line};\n ";
+                stringRow += $"{line}\n";
             }
 
             return stringRow;
@@ -83,31 +83,6 @@ namespace VsConsole.Logic
 
             return stringDT;
         }
-        //public static string Convert(DataTable dt)
-        //{
-        //    string stringRow;
-        //    const int colWidth = 15;
-
-        //    stringRow = string.Empty;
-
-        //    for (int i = 0; i < dt.Columns.Count; i++)
-        //    {
-        //        stringRow += $"{dt.Columns[i].ColumnName.ToUpper(),colWidth}";
-        //        stringRow += " ;  ";
-        //    };
-        //    stringRow += "\n";
-        //    foreach (DataRow r in dt.Rows)
-        //    {
-        //        for (int i = 0; i < dt.Columns.Count; i++)
-        //        {
-        //            stringRow += $"{r[i].ToString(),colWidth}";
-        //            stringRow += " ;  ";
-        //        }
-        //        stringRow += "\n";
-        //    }
-
-        //    return stringRow;
-        //}
 
         public static string ToSingleLine(IEnumerable<string> messages)
         {
@@ -130,7 +105,7 @@ namespace VsConsole.Logic
                     shortMsg += "...";
                 }
 
-                fullLine += $"{shortMsg,margin}";
+                fullLine += $"{shortMsg,margin}; ";
             }
 
             return fullLine;

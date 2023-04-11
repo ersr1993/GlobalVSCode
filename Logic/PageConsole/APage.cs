@@ -3,6 +3,7 @@ namespace VsConsole.Logic.PageConsole
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using VsConsole.Data;
     public abstract class APage : IPage
     {
@@ -13,7 +14,15 @@ namespace VsConsole.Logic.PageConsole
         {
 
             Console.Title = _title;
-            Console.Clear();
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException ex)
+            {
+                string msg = "Erreur causée par la position de la fenêtre console, allongée le long d'un côté";
+                throw new Exception(msg,innerException:ex);
+            }
 
             MyConsole.MyWriteLine(_title, ConsoleColor.Yellow);
 
@@ -21,7 +30,8 @@ namespace VsConsole.Logic.PageConsole
             Console.WriteLine(_body);
             MyConsole.MyWriteLine(MsgOut.DottedLines(), ConsoleColor.Yellow);
 
-            if(_footerItems!=null)MyConsole.WriteLines(_footerItems);
+            if (_footerItems != null)
+                MyConsole.WriteLines(_footerItems);
             MyConsole.MyWriteLine($"{MsgOut.GetMenuActionsInstruction()} ", ConsoleColor.DarkMagenta); // Je l'aime Bien
         }
         public virtual void ClearFooter()

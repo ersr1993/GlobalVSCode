@@ -5,11 +5,11 @@ namespace VsConsole
     public abstract class AMenuMain : AMenu
     {
         protected List<IMenu> _subMenus;
-        public AMenuMain() : base("Menu : Main")
+        public AMenuMain() : base("Menu principal")
         {
             _subMenus = new List<IMenu>();
         }
-        protected void AddMenus(List<IMenu> subMenus)
+        protected void CommitSubMenus()
         {
             foreach (IMenu menu in _subMenus)
             {

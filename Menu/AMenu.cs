@@ -7,6 +7,7 @@
     using VsConsole.Logic.PageConsole;
     using VsConsole.Logic;
     using StanadTools;
+    using Microsoft.VisualBasic;
 
     public abstract class AMenu : APage, IMenu
     {
@@ -16,7 +17,7 @@
         protected NavigationLogic _navigator;
         private DataTableUtilities _dtU;
 
-        internal Action? LoadedDelegate { get; private set; }
+        internal Action LoadedDelegate { get; private set; }
 
         private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Green;
 
@@ -40,7 +41,6 @@
             string cmdName;
             cmdName = $"{GetIncrementalId()}{name}";
             _commandList.Add(cmdName, myDelegateFunction);
-            RefreshSelection(SelectedFunctionId);
         }
         private string GetIncrementalId()
         {
@@ -60,30 +60,35 @@
                 myDelegateFunction(inputVar);
             };
             _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
-            RefreshSelection(SelectedFunctionId);
         }
         public void AddCommand(string name, Action<string> myDelegateFunction, string inputVar)
         {
             Action FinalAction;
             FinalAction = () => myDelegateFunction(inputVar);
             _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
-            RefreshSelection(SelectedFunctionId);
+        }
+        public void AddCommand(Action<string> myDelegateFunction, string inputVar)
+        {
+            Action FinalAction;
+            string name;
+            name = myDelegateFunction.Method.Name;
+            FinalAction = () => myDelegateFunction(inputVar);
+            _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
         }
 
-        public void Open()
+        public virtual void Open()
         {
             while (_navigator.StayInLoop())
             {
+                RefreshSelection(SelectedFunctionId);
                 this.DisplayPage();
                 _navigator.AskUserKeyDown();
-                RefreshSelection(SelectedFunctionId);
             }
         }
 
         public void AddFooterMessage(DataTable dt)
         {
             string stringDataTable;
-
             stringDataTable = ObjToString.Convert(dt);
             AddFooterMessage(stringDataTable);
         }
@@ -99,7 +104,7 @@
             line = (message, _FOOTER_DEFAULTCOLOR);
             _footerItems?.Add(line);
         }
-        public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR,bool isStringList=false)
+        public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false)
         {
             string fullLine;
             const int lgth = 15;
@@ -135,9 +140,25 @@
             }
             catch (FormatException ex)
             {
-                throw new FormatException("Impossible de convertir la valeur en entier");
+                string msg;
+                msg = "Impossible de convertir la valeur en entier";
+                throw new FormatException(msg,ex);
             }
         }
+        public int AskUserint(string messageToDisplay)
+        {
+            string outputAsString;
+            outputAsString = AskUserValue(messageToDisplay);
+            try
+            {
+                return int.Parse(outputAsString);
+            }
+            catch (FormatException ex)
+            {
+                throw new FormatException("Impossible de convertir la valeur en entier",ex);
+            }
+        }
+
         public string AskUserValue(string messageToDisplay)
         {
             string output;
@@ -163,22 +184,18 @@
             SelectedFunctionId = selLine;
             int lineId = 0;
 
-            foreach (string funcTitle in _commandList.Keys)
+            for (int i = 0; i < _commandList.Count(); i++)
             {
-                _body += $"{GetTitleWithStyle(lineId, funcTitle, IsSelectedId(lineId))} \n";
+                string funcTitle = _commandList.ElementAt(i).Key;
 
+                _body += $"{GetTitleWithStyle(lineId, funcTitle, IsSelectedId(lineId))} \n";
                 if (IsSelectedId(lineId))
                 {
                     LoadedDelegate = _commandList.Values.ElementAt(lineId);
                 }
-
                 lineId++;
             }
         }
-        //internal void InvokeAction()
-        //{
-        //    LoadedDelegate?.Invoke();
-        //}
         private bool IsSelectedId(int lineId)
         {
             return lineId == SelectedFunctionId;

@@ -107,7 +107,7 @@ namespace VsConsole.Logic
                 selectedFunction = temp[0];
                 choice = selectedFunction.Invoke();
             }
-            catch (IndexOutOfRangeException ex)
+            catch (IndexOutOfRangeException)
             {
                 string message;
                 message = $"Touche '{usrInput}' non reconnue";
