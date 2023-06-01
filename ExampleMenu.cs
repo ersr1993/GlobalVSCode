@@ -6,12 +6,11 @@ namespace VsConsole
     {
         public ExampleMenu() : base("ExampleMenu")
         {
-            SetupCommands();
+            //SetupCommands();
         }
-        protected  void SetupCommands()
+        protected  override void SetupCommands()
         {
             this.AddCommand("Hello World Function", DisplayFooterHelloWorld);
-
         }
 
         private void DisplayFooterHelloWorld()

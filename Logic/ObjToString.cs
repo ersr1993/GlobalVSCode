@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StandardTools.Reflexions;
 
 namespace VsConsole.Logic
 {
@@ -113,14 +114,22 @@ namespace VsConsole.Logic
         public static string Convert<T>(IEnumerable<T> objects) where T : class
         {
 
-            StandardTools.DiggingClass diggingClass;
+            //StandardTools.DiggingClass diggingClass;
             string outputString;
 
-            diggingClass = new StandardTools.DiggingClass();
+            //diggingClass = new StandardTools.DiggingClass();
             outputString = string.Empty;
+            ParamsStringBuilder paramsStringBuilder;
+            DiggingTypes diggingTypes;
+            DiggingObject diggingInterface;
+            diggingTypes = new DiggingTypes();
+            diggingInterface= new DiggingObject(diggingTypes);
+            paramsStringBuilder = new ParamsStringBuilder(diggingInterface);
+
             foreach (object obj in objects)
             {
-                outputString += $"{diggingClass.GetFormatedString_PropertyEqualsValues(obj)} \n";
+                //outputString += $"{diggingClass.GetFormatedString_PropertyEqualsValues(obj)} \n";
+                outputString += $"{paramsStringBuilder.GetFormatedString_PropertyEqualsValues(obj)} \n";
             }
 
             return outputString;

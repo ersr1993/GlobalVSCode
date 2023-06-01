@@ -20,7 +20,8 @@ namespace VsConsole.Logic.PageConsole
             }
             catch (IOException ex)
             {
-                string msg = "Erreur causée par la position de la fenêtre console, allongée le long d'un côté";
+                string msg;
+                msg = "Erreur causée par la position de la fenêtre console, allongée le long d'un côté";
                 throw new Exception(msg,innerException:ex);
             }
 
@@ -31,13 +32,14 @@ namespace VsConsole.Logic.PageConsole
             MyConsole.MyWriteLine(MsgOut.DottedLines(), ConsoleColor.Yellow);
 
             if (_footerItems != null)
+            {
                 MyConsole.WriteLines(_footerItems);
+            }
             MyConsole.MyWriteLine($"{MsgOut.GetMenuActionsInstruction()} ", ConsoleColor.DarkMagenta); // Je l'aime Bien
         }
         public virtual void ClearFooter()
         {
             this._footerItems = new List<(string, ConsoleColor?)>();
-            //this._footer = string.Empty;
         }
 
     }

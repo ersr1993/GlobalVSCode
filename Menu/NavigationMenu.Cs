@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VsConsole.Logic.PageConsole;
 
 
 namespace VsConsole.Logic
@@ -20,7 +17,7 @@ namespace VsConsole.Logic
     {
         private AMenu _menu;
         private Dictionary<ConsoleKey, Func<NavigationChoice>> _menuButtonsActions;
-        private static NavigationChoice _userKeyDown; // static allows cascadate quit
+        internal static NavigationChoice _userKeyDown; // static allows cascadate quit
 
         internal NavigationLogic(AMenu menu)
         {
@@ -90,6 +87,7 @@ namespace VsConsole.Logic
                 MyConsole.Say(errorMessage, ConsoleColor.Red);
                 MyConsole.SayAndWait(fullInfo, ConsoleColor.DarkYellow);
 #endif
+                //throw;
             }
 
             return onKeyDown;

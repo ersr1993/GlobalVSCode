@@ -1,4 +1,5 @@
 ﻿using StandardTools;
+using StandardTools.Reflexions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,7 @@ namespace StanadTools
     internal class DataTableUtilities
     {
         internal DiggingClass _diggingClass { get; private set; }
+        internal DiggingInterface _diggingInterface { get; private set; }
         public DataTableUtilities(DiggingFormatParameter diggingFormatParameter = null)
         {
             diggingFormatParameter = diggingFormatParameter ?? new DiggingFormatParameter();
@@ -33,13 +35,14 @@ namespace StanadTools
         private void PopulateDataTable<T>(ref DataTable dt, List<T> myObjList)
         {
             //DiggingClass diggingClass;
-            List<string> propNames;
+            List<string> titles;
 
 
             //diggingClass = BuildDiggingClass();
-            propNames = _diggingClass.GetPropertyNames_List(myObjList[0]);
+            //titles = _diggingClass.GetPropertyNames_List(myObjList[0]);
+            titles = _diggingInterface.GetPropertyValues_Dictionnary(myObjList[0]).Keys.ToList();
 
-            foreach (string prop in propNames)
+            foreach (string prop in titles)
             {
                 dt.Columns.Add(prop);
             }
