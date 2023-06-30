@@ -1,7 +1,5 @@
-﻿namespace VsConsole.Logic
+﻿namespace VsConsole.Logic;
+public interface IObjToString
 {
-    public interface IObjToString
-    {
-        string GetHello();
-    }
+    string GetHello();
 }

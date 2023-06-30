@@ -1,5 +1,4 @@
-﻿namespace VsConsole;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Data;
@@ -7,7 +6,9 @@ using VsConsole.Logic.PageConsole;
 using VsConsole.Logic;
 using StandardTools;
 using StandardTools.Reflexions;
+using StandardTools.Utilities;
 
+namespace VsConsole;
 public abstract class AMenu : APage, IMenu
 {
     public int SelectedFunctionId { get; set; }
@@ -35,71 +36,17 @@ public abstract class AMenu : APage, IMenu
     }
 
     protected abstract void SetupCommands();
-    public void AddCommand(Action myDelegateFunction)
+    public void AddCommand(Action delegatedAction)
     {
         string commandLabel;
-        commandLabel = myDelegateFunction.Method.Name;
-        AddCommand(commandLabel, myDelegateFunction);
+        commandLabel = delegatedAction.Method.Name;
+        AddCommand(commandLabel, delegatedAction);
     }
-    public void AddCommand(string name, Action myDelegateFunction)
-    {
-        string cmdName;
-        cmdName = $"{GetIncrementalId()}{name}";
-        _commandList.Add(cmdName, myDelegateFunction);
-    }
-    private string GetIncrementalId()
-    {
-        string id;
-        id = $"{_commandList.Count.ToString()} - ";
-        return id;
-    }
-    public void AddCommand(string nomParametre, Action<string> myDelegateFunction)
-    {
-        Action FinalAction;
-        string name;
-
-        FinalAction = () =>
-        {
-            string inputVar;
-            inputVar = this.AskUserValue($"veuillez entrer {nomParametre}: ");
-            myDelegateFunction(inputVar);
-        };
-        name = myDelegateFunction.Method.Name;
-        _commandList.Add($"{_commandList.Count} - {name}", FinalAction);
-    }
-
-    public void AddCommand(string name, string nomParametre, Action<string> myDelegateFunction)
-    {
-        Action FinalAction;
-
-
-        FinalAction = () =>
-        {
-            string inputVar;
-            inputVar = this.AskUserValue($"veuillez entrer {nomParametre}: ");
-            myDelegateFunction(inputVar);
-        };
-        _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
-    }
-    public void AddCommand(string name, Action<string> myDelegateFunction, string inputVar)
-    {
-        Action FinalAction;
-        FinalAction = () => myDelegateFunction(inputVar);
-        _commandList.Add($"{_commandList.Count.ToString()} - {name}", FinalAction);
-    }
-    public void AddCommand(Action<string> myDelegateFunction, string inputVar)
-    {
-        Action FinalAction;
-        string name;
-        name = myDelegateFunction.Method.Name;
-        FinalAction = () => myDelegateFunction(inputVar);
-        _commandList.Add($"{_commandList.Count} - {name}", FinalAction);
-    }
-
     public virtual void Open()
     {
         this._commandList.Clear();
-        SetupCommands();
+        SetupCommands()
+;
 
         while (_navigator.StayInLoop())
         {
@@ -108,11 +55,60 @@ public abstract class AMenu : APage, IMenu
             _navigator.AskUserKeyDown();
         }
     }
-    public void AddFooterMessage(DataTable dt)
+    public void AddCommand(string name, Action delegatedAction)
     {
-        string stringDataTable;
-        stringDataTable = ObjToString.Convert(dt);
-        AddFooterMessage(stringDataTable);
+        string cmdName;
+        cmdName = $"{_commandList.Count}- {name}";
+        _commandList.Add(cmdName, delegatedAction);
+    }
+    public void AddCommand(string paramName, Action<string> delegatedMethod)
+    {
+        Action FinalAction;
+        string methodName;
+
+        FinalAction = () =>
+        {
+            string inputVar;
+            inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
+            delegatedMethod(inputVar);
+        };
+
+        methodName = delegatedMethod.Method.Name;
+        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+    }
+    public void AddCommand(string methodName, string paramName, Action<string> delegatedMethod)
+    {
+        Action FinalAction;
+
+        FinalAction = () =>
+        {
+            string inputVar;
+            inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
+            delegatedMethod(inputVar);
+        };
+        _commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
+    }
+    public void AddCommand(string methodName, Action<string> delegatedMethod, string inputValue)
+    {
+        Action FinalAction;
+        FinalAction = () => delegatedMethod(inputValue);
+        _commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
+    }
+    public void AddCommand(Action<string> delegatedMethod, string inputValue)
+    {
+        Action FinalAction;
+        string name;
+        name = delegatedMethod.Method.Name;
+        FinalAction = () => delegatedMethod(inputValue);
+        _commandList.Add($"{_commandList.Count} - {name}", FinalAction);
+    }
+
+
+    public void AddFooterMessage(string message)
+    {
+        (string, ConsoleColor?) line;
+        line = (message, _FOOTER_DEFAULTCOLOR);
+        _footerItems?.Add(line);
     }
     public void AddFooterMessage(string footerItem, ConsoleColor color)
     {
@@ -120,11 +116,13 @@ public abstract class AMenu : APage, IMenu
         line = (footerItem, color);
         _footerItems.Add(line);
     }
-    public void AddFooterMessage(string message)
+    public void AddFooterMessage<T>(IEnumerable<T> objects)
     {
-        (string, ConsoleColor?) line;
-        line = (message, _FOOTER_DEFAULTCOLOR);
-        _footerItems?.Add(line);
+        DataTable dt;
+        List<T> list;
+        list = objects.ToList();
+        dt = _dtU.ToDataTable_Interface<T>(list);
+        AddFooterMessage(dt);
     }
     public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false)
     {
@@ -152,6 +150,13 @@ public abstract class AMenu : APage, IMenu
 
         AddFooterMessage(fullLine, color);
     }
+    public void AddFooterMessage(DataTable dt)
+    {
+        string stringDataTable;
+        stringDataTable = ObjToString.Convert(dt);
+        AddFooterMessage(stringDataTable);
+    }
+
     public float AskUserFloat(string messageToDisplay)
     {
         string outputAsString;
@@ -180,7 +185,6 @@ public abstract class AMenu : APage, IMenu
             throw new FormatException("Impossible de convertir la valeur en entier", ex);
         }
     }
-
     public string AskUserValue(string messageToDisplay)
     {
         string output;
@@ -189,34 +193,14 @@ public abstract class AMenu : APage, IMenu
 
         return output;
     }
-    public void AddFooterMessage<T>(IEnumerable<T> objects)
-        where T : class
+
+    internal void RefreshSelection(int selLine)
     {
-        DataTable dt;
-        List<T> list;
+        int lineId;
 
-        list = objects.ToList();
-        dt = _dtU.ToDataTable_Interface<T>(list);
-
-        AddFooterMessage(dt);
-    }
-    //public void AddFooterMessage<U, U>(IEnumerable<U> objects)
-    //        where U : class
-    //{
-    //    DataTable dt;
-    //    List<U> list;
-
-    //    list = objects.ToList();
-    //    dt = _dtU.ToDataTable_Concrete<U,U>(list);
-
-    //    AddFooterMessage(dt);
-    //}
-    private void RefreshSelection(int selLine)
-    {
         _body = string.Empty;
         SelectedFunctionId = selLine;
-        int lineId = 0;
-
+        lineId = 0;
         for (int i = 0; i < _commandList.Count(); i++)
         {
             string funcTitle = _commandList.ElementAt(i).Key;
