@@ -144,7 +144,7 @@ public class ObjToString : IObjToString
         outputString = string.Empty;
         foreach (T obj in objects)
         {
-            //outputString += $"{diggingClass.GetFormatedString_PropertyEqualsValues(obj)} \n";
+            //outputString += $"{diggingClass.BuildXml(obj)} \n";
             outputString += $"{paramsStringBuilder.GetFormatedString_PropertyEqualsValues<T>(obj)} \n";
         }
 

@@ -15,7 +15,7 @@ public abstract class AMenu : APage, IMenu
 
     protected Dictionary<string, Action> _commandList;
     private NavigationLogic _navigator;
-    private DataTableUtilities _dtU;
+    private IDataTableUtilities _dtU;
 
     internal Action LoadedDelegate { get; private set; }
 
@@ -42,6 +42,16 @@ public abstract class AMenu : APage, IMenu
         commandLabel = delegatedAction.Method.Name;
         AddCommand(commandLabel, delegatedAction);
     }
+    public void AddCommand(Func<string> TestFunc)
+    {
+        string commandLabel;
+        commandLabel = TestFunc.Method.Name;
+        AddCommand(commandLabel, () =>
+        {
+            string testOutput = TestFunc();
+            this.AddFooterMessage(testOutput);
+        });
+    }
     public virtual void Open()
     {
         this._commandList.Clear();
@@ -55,6 +65,8 @@ public abstract class AMenu : APage, IMenu
             _navigator.AskUserKeyDown();
         }
     }
+
+    public void _________() { AddCommand("___ ___ ___", () => { }); }
     public void AddCommand(string name, Action delegatedAction)
     {
         string cmdName;
@@ -76,6 +88,22 @@ public abstract class AMenu : APage, IMenu
         methodName = delegatedMethod.Method.Name;
         _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
     }
+    public void AddCommand(string paramName, Action<int> delegatedMethod)
+    {
+        Action FinalAction;
+        string methodName;
+
+        FinalAction = () =>
+        {
+            int inputVar;
+            inputVar = this.AskUserint($"veuillez entrer {paramName} (int) : ");
+            delegatedMethod(inputVar);
+        };
+
+        methodName = delegatedMethod.Method.Name;
+        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+    }
+
     public void AddCommand(string methodName, string paramName, Action<string> delegatedMethod)
     {
         Action FinalAction;
@@ -245,4 +273,34 @@ public abstract class AMenu : APage, IMenu
     {
         this.AddFooterMessage("Hello World !", ConsoleColor.Green);
     }
+    protected virtual void DisplayListSubItems<T>(IEnumerable<T> items, int deckCount =50)
+    {
+        IEnumerable<T> res;
+        int userWill, count;
+        string msg;
+        decimal resTenths;
+        int resCountTranche;
+
+        count = items.Count();
+        resTenths = count / deckCount;
+        resCountTranche = (int)Math.Floor(resTenths);
+        msg = $"Tranche de {deckCount} resultats 0 et {Math.Max(resCountTranche-1,0)}";
+        userWill = int.MaxValue;
+        while (userWill > resCountTranche-1&& userWill!=0)
+        {
+            userWill = this.AskUserint(msg);
+        };
+
+        int lastSliceCount;
+        lastSliceCount = deckCount;
+        if (userWill == resCountTranche)
+        {
+            lastSliceCount = count - (resCountTranche * deckCount);
+        }
+
+        res = items.ToList<T>().GetRange(userWill * deckCount, lastSliceCount);
+        this.AddFooterMessage($"Tranche demandée :{userWill*deckCount} : {userWill*deckCount+lastSliceCount-1}:",ConsoleColor.DarkBlue);
+        this.AddFooterMessage(res);
+    }
+
 }

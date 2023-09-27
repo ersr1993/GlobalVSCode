@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 namespace VsConsole.Logic;
 internal enum NavigationChoice
@@ -25,7 +26,16 @@ public class NavigationLogic
     }
     private Dictionary<ConsoleKey, Func<NavigationChoice>> GetMenuButtonsActions()
     {
-        return new Dictionary<ConsoleKey, Func<NavigationChoice>>()
+        Dictionary<ConsoleKey, Func<NavigationChoice>> output;
+        //IEnumerable<int> numpadAction;
+        Dictionary<ConsoleKey, Func<NavigationChoice>> numpadActions;
+        //numpadAction = ;
+        numpadActions = Enumerable.Range(0, 10)
+                    .ToDictionary(
+                    i => (ConsoleKey)Enum.Parse(typeof(ConsoleKey), $"NumPad{i}"),
+                    i => (Func<NavigationChoice>)(() => Nav((ConsoleKey)i)));
+
+        output = new Dictionary<ConsoleKey, Func<NavigationChoice>>()
             {
                 { ConsoleKey.C,ClearFooter},
                 { ConsoleKey.K, NavUp},
@@ -37,17 +47,10 @@ public class NavigationLogic
                 { ConsoleKey.B, BackMenu },
                 { ConsoleKey.Q, QuitProgram},
                 { ConsoleKey.Escape, QuitProgram },
-                { ConsoleKey.NumPad0, ()=>Nav(ConsoleKey.NumPad0) },
-                { ConsoleKey.NumPad1, ()=>Nav(ConsoleKey.NumPad1) },
-                { ConsoleKey.NumPad2, ()=>Nav(ConsoleKey.NumPad2) },
-                { ConsoleKey.NumPad3, ()=>Nav(ConsoleKey.NumPad3) },
-                { ConsoleKey.NumPad4, ()=>Nav(ConsoleKey.NumPad4) },
-                { ConsoleKey.NumPad5, ()=>Nav(ConsoleKey.NumPad5) },
-                { ConsoleKey.NumPad6, ()=>Nav(ConsoleKey.NumPad6) },
-                { ConsoleKey.NumPad7, ()=>Nav(ConsoleKey.NumPad7) },
-                { ConsoleKey.NumPad8, ()=>Nav(ConsoleKey.NumPad8) },
-                { ConsoleKey.NumPad9, ()=>Nav(ConsoleKey.NumPad9) },
             };
+        output = output.Concat(numpadActions)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        return output;
     }
 
     private NavigationChoice Nav(ConsoleKey x)
@@ -106,7 +109,7 @@ public class NavigationLogic
     private NavigationChoice SafeNavigate(ConsoleKey keyDown)
     {
         NavigationChoice onKeyDown;
-        onKeyDown= NavigationChoice.stay;
+        onKeyDown = NavigationChoice.stay;
         try
         {
             onKeyDown = InokeNavigation(keyDown);
@@ -193,9 +196,9 @@ public class NavigationLogic
     }
     private NavigationChoice NavUp()
     {
-        //bool isTop;
-        //isTop = _menu.SelectedFunctionId > 0;
-        if (IsTop(_menu.SelectedFunctionId))
+        bool isTop;
+        isTop = IsTop(_menu.SelectedFunctionId);
+        if (isTop)
         {
             _menu.SelectedFunctionId--;
         }

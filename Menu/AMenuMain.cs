@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace VsConsole
 {
-    public abstract class AMenuMain : AMenu
+    public abstract class AMenuMain : AMenu, IMenu
     {
-        protected List<IMenu> _subMenus;
+        protected List<IMenu> _subMenus { get; set; }
         public AMenuMain(string title = "Menu principal") : base(title)
         {
             _subMenus = new List<IMenu>();
@@ -39,8 +39,5 @@ namespace VsConsole
                 //throw new KeyNotFoundException();
             }
         }
-        //private void CommitSubMenus()
-        //{
-        //}
     }
 }
