@@ -36,7 +36,7 @@
                 Console.WriteLine(line.Item1,line.Item2);
             }
         }
-        private static void MyWriteLine(string someStr, ConsoleColor myColor=ConsoleColor.White)
+        public static void MyWriteLine(string someStr, ConsoleColor myColor=ConsoleColor.White)
         {
             Console.ForegroundColor = myColor;
 

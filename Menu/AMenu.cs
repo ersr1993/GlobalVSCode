@@ -9,6 +9,7 @@ using StandardTools.Reflexions;
 using StandardTools.Utilities;
 
 namespace VsConsole;
+
 public abstract class AMenu : APage, IMenu
 {
     public int SelectedFunctionId { get; set; }
@@ -20,15 +21,16 @@ public abstract class AMenu : APage, IMenu
     internal Action LoadedDelegate { get; private set; }
 
     private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Green;
-
+    
     public AMenu(string someTitle = "Menu")
     {
-        _commandList = new Dictionary<string, Action>();
-
         DiggingObject diggingInterface;
         DiggingTypes diggingTypes;
+
+        _commandList = new Dictionary<string, Action>();
         diggingTypes = new DiggingTypes();
         diggingInterface = new DiggingObject(diggingTypes);
+
         _dtU = new DataTableUtilities(diggingInterface);
         _navigator = new NavigationLogic(this);
         _title = someTitle;
@@ -55,8 +57,7 @@ public abstract class AMenu : APage, IMenu
     public virtual void Open()
     {
         this._commandList.Clear();
-        SetupCommands()
-;
+        SetupCommands();
 
         while (_navigator.StayInLoop())
         {
@@ -149,8 +150,15 @@ public abstract class AMenu : APage, IMenu
         DataTable dt;
         List<T> list;
         list = objects.ToList();
-        dt = _dtU.ToDataTable_Interface<T>(list);
-        AddFooterMessage(dt);
+        if (list.Any())
+        {
+            dt = _dtU.ToDataTable_Interface<T>(list);
+            AddFooterMessage(dt);
+        }
+        else
+        {
+            AddFooterMessage("Empty List");
+        }
     }
     public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false)
     {
@@ -273,7 +281,7 @@ public abstract class AMenu : APage, IMenu
     {
         this.AddFooterMessage("Hello World !", ConsoleColor.Green);
     }
-    protected virtual void DisplayListSubItems<T>(IEnumerable<T> items, int deckCount =50)
+    protected virtual void DisplayListSubItems<T>(IEnumerable<T> items, int deckCount = 50)
     {
         IEnumerable<T> res;
         int userWill, count;
@@ -284,9 +292,9 @@ public abstract class AMenu : APage, IMenu
         count = items.Count();
         resTenths = count / deckCount;
         resCountTranche = (int)Math.Floor(resTenths);
-        msg = $"Tranche de {deckCount} resultats 0 et {Math.Max(resCountTranche-1,0)}";
+        msg = $"Tranche de {deckCount} resultats 0 et {Math.Max(resCountTranche - 1, 0)}";
         userWill = int.MaxValue;
-        while (userWill > resCountTranche-1&& userWill!=0)
+        while (userWill > resCountTranche - 1 && userWill != 0)
         {
             userWill = this.AskUserint(msg);
         };
@@ -299,7 +307,7 @@ public abstract class AMenu : APage, IMenu
         }
 
         res = items.ToList<T>().GetRange(userWill * deckCount, lastSliceCount);
-        this.AddFooterMessage($"Tranche demandée :{userWill*deckCount} : {userWill*deckCount+lastSliceCount-1}:",ConsoleColor.DarkBlue);
+        this.AddFooterMessage($"Tranche demandée :{userWill * deckCount} : {userWill * deckCount + lastSliceCount - 1}:", ConsoleColor.DarkBlue);
         this.AddFooterMessage(res);
     }
 

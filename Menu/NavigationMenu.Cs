@@ -75,7 +75,7 @@ public class NavigationLogic
                 _menu.SelectedFunctionId = total - 1;
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             _menu.SelectedFunctionId = 0;
         }
@@ -106,6 +106,7 @@ public class NavigationLogic
             _userKeyDown = SafeNavigate(keyDown);
         }
     }
+
     private NavigationChoice SafeNavigate(ConsoleKey keyDown)
     {
         NavigationChoice onKeyDown;
