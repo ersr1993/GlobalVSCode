@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VsConsole.Logic;
 internal static class MyConsole
@@ -14,7 +15,7 @@ internal static class MyConsole
     internal static void MyWriteLine(string someStr, ConsoleColor myColor = _CONSOLE_COLOR)
     {
         Console.ForegroundColor = myColor;
-        Console.WriteLine(someStr??"null", myColor);
+        Console.WriteLine(someStr ?? "null", myColor);
         Console.ResetColor();
     }
     internal static void WriteLines(List<(string msg, ConsoleColor? color)> lines)

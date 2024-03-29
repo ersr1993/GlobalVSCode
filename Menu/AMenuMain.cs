@@ -25,19 +25,22 @@ namespace VsConsole
         {
             if (_subMenus == null || !_subMenus.Any())
             {
-                string msg;
-                char chevronOpen = '[';
-                char chevronClose = ']';
-                msg = $"Afin d'utiliser le menu principal, pensez à implémenter les menus " +
-                    $"de la liste _subMenus dans le constructeur par exemple. \n" +
-                    "ex : this._subMenus = new List<IMenu>()\n" +
-                    $"{chevronOpen} \n" +
-                    "   monMenuA,\n" +
-                    "   monMenuB\n"
-                    + $"{chevronClose}";
-                this.AddFooterMessage(msg, ConsoleColor.Red);
-                //throw new KeyNotFoundException();
+                DisplayNoMenuMessages();
             }
+        }
+        private void DisplayNoMenuMessages()
+        {
+            string msg;
+            char chevronOpen = '[';
+            char chevronClose = ']';
+            msg = $"Afin d'utiliser le menu principal, pensez à implémenter les menus " +
+                $"de la liste _subMenus dans le constructeur par exemple. \n" +
+                "ex : this._subMenus = new List<IMenu>()\n" +
+                $"{chevronOpen} \n" +
+                "   monMenuA,\n" +
+                "   monMenuB\n"
+                + $"{chevronClose}";
+            this.AddFooterMessage(msg, ConsoleColor.Red);
         }
     }
 }

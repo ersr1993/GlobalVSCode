@@ -12,29 +12,32 @@ namespace VsConsole;
 
 public abstract class AMenu : APage, IMenu
 {
-    public int SelectedFunctionId { get; set; }
+    public int SelectedFunctionId { get { return _actions.SelectedFunctionId; } }
+    internal CommandActions _actions { get; private set; }
 
-    protected Dictionary<string, Action> _commandList;
-    private NavigationLogic _navigator;
-    private IDataTableUtilities _dtU;
+    private NavigationLogic _navigator { get; set; }
+    private IDataTableUtilities _dtU { get; set; }
 
-    internal Action LoadedDelegate { get; private set; }
 
     private const ConsoleColor _FOOTER_DEFAULTCOLOR = ConsoleColor.Green;
-    
+
     public AMenu(string someTitle = "Menu")
+    {
+        InstanciateDependencies();
+        _navigator.AddKeyFuncAssociation(ConsoleKey.C, ClearFooter);
+        _title = someTitle;
+        _footerItems = new List<(string, ConsoleColor?)>();
+    }
+    private void InstanciateDependencies()
     {
         DiggingObject diggingInterface;
         DiggingTypes diggingTypes;
-
-        _commandList = new Dictionary<string, Action>();
         diggingTypes = new DiggingTypes();
         diggingInterface = new DiggingObject(diggingTypes);
 
+        _actions = new CommandActions();
+        _navigator = new NavigationLogic(this._actions);
         _dtU = new DataTableUtilities(diggingInterface);
-        _navigator = new NavigationLogic(this);
-        _title = someTitle;
-        _footerItems = new List<(string, ConsoleColor?)>();
     }
 
     protected abstract void SetupCommands();
@@ -56,80 +59,112 @@ public abstract class AMenu : APage, IMenu
     }
     public virtual void Open()
     {
-        this._commandList.Clear();
+        this._actions._commandList.Clear();
         SetupCommands();
 
         while (_navigator.StayInLoop())
         {
             RefreshSelection(SelectedFunctionId);
             this.DisplayPage();
-            _navigator.AskUserKeyDown();
+            ExpectsKeyDown();
         }
     }
+    private void ExpectsKeyDown()
+    {
+        try
+        {
+            //onKeyDown = InokeNavigation(keyDown);
+            _navigator.AskUserKeyDown();
+        }
+        catch (Exception e)
+        {
+            DisplayErrorMessage(e);
+        }
+    }
+    private void DisplayErrorMessage(Exception e)
+    {
+        string errorMessage;
+        errorMessage = $"\n \n  *** *** *** ERROR : *** *** *** \n " +
+                       $"-  {e.Message} \n\n ";
+        this.AddFooterMessage(errorMessage, ConsoleColor.Red);
+#if DEBUG
+        string fullInfo;
+        fullInfo = $" \n - StackTrace : \n  " +
+                    $"{e.StackTrace}";
+        MyConsole.Say(errorMessage, ConsoleColor.Red);
+        MyConsole.SayAndWait(fullInfo, ConsoleColor.DarkYellow);
+#endif
+    }
 
-    public void _________() { AddCommand("___ ___ ___", () => { }); }
+    public void _________()
+    { AddCommand("___ ___ ___", () => { }); }
     public void AddCommand(string name, Action delegatedAction)
     {
         string cmdName;
-        cmdName = $"{_commandList.Count}- {name}";
-        _commandList.Add(cmdName, delegatedAction);
+        cmdName = $"{_actions._commandList.Count}- {name}";
+        _actions._commandList.Add(cmdName, delegatedAction);
+        //_actions.AddCommand(name, delegatedAction);
     }
     public void AddCommand(string paramName, Action<string> delegatedMethod)
     {
-        Action FinalAction;
-        string methodName;
+        //Action FinalAction;
+        //string methodName;
 
-        FinalAction = () =>
-        {
-            string inputVar;
-            inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
-            delegatedMethod(inputVar);
-        };
+        //FinalAction = () =>
+        //{
+        //    string inputVar;
+        //    inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
+        //    delegatedMethod(inputVar);
+        //};
 
-        methodName = delegatedMethod.Method.Name;
-        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+        //methodName = delegatedMethod.Method.Name;
+        //_actions._commandList.Add($"{_actions._commandList.Count} - {methodName}", FinalAction);
+        _actions.AddCommand(paramName, delegatedMethod);
     }
     public void AddCommand(string paramName, Action<int> delegatedMethod)
     {
-        Action FinalAction;
-        string methodName;
+        //Action FinalAction;
+        //string methodName;
 
-        FinalAction = () =>
-        {
-            int inputVar;
-            inputVar = this.AskUserint($"veuillez entrer {paramName} (int) : ");
-            delegatedMethod(inputVar);
-        };
+        ////FinalAction = () =>
+        ////{
+        ////    int inputVar;
+        ////    inputVar = this.AskUserint($"veuillez entrer {paramName} (int) : ");
+        ////    delegatedMethod(inputVar);
+        ////};
+        //FinalAction = _actionsFactory.WithInputInt(paramName, delegatedMethod);
 
-        methodName = delegatedMethod.Method.Name;
-        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+        //methodName = delegatedMethod.Method.Name;
+        //_actions._commandList.Add($"{_actions._commandList.Count} - {methodName}", FinalAction);
+        _actions.AddCommand(paramName, delegatedMethod);
     }
 
     public void AddCommand(string methodName, string paramName, Action<string> delegatedMethod)
     {
-        Action FinalAction;
+        //_actions.AddCommand(methodName, paramName,delegatedMethod);
+        //Action FinalAction;
+        //string msg;
 
-        FinalAction = () =>
-        {
-            string inputVar;
-            inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
-            delegatedMethod(inputVar);
-        };
-        _commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
+        //FinalAction = _actionsFactory.WithInputString(paramName, delegatedMethod);
+        //msg = $"{_actions._commandList.Count} - {methodName}";
+        //_actions._commandList.Add(msg, FinalAction);
+        _actions.AddCommand(methodName, paramName, delegatedMethod);
     }
     public void AddCommand(string methodName, Action<string> delegatedMethod, string inputValue)
     {
-        Action FinalAction;
-        FinalAction = () => delegatedMethod(inputValue);
-        _commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
+        _actions.AddCommand(methodName, delegatedMethod, inputValue);
+        //Action FinalAction;
+        //FinalAction = () => delegatedMethod(inputValue);
+        //_actions._commandList.Add($"{_actions._commandList.Count.ToString()} - {methodName}", FinalAction);
     }
     public void AddCommand(Action<string> delegatedMethod, string inputValue)
     {
-        Action FinalAction;
-        string name;
-        name = delegatedMethod.Method.Name;
-        FinalAction = () => delegatedMethod(inputValue);
-        _commandList.Add($"{_commandList.Count} - {name}", FinalAction);
+        _actions.AddCommand(delegatedMethod, inputValue);
+        //Action FinalAction;
+        //string name;
+        //name = delegatedMethod.Method.Name;
+        //FinalAction = () => delegatedMethod(inputValue);
+        //_actions._commandList.Add($"{_actions._commandList.Count} - {name}", FinalAction);
     }
 
 
@@ -195,39 +230,17 @@ public abstract class AMenu : APage, IMenu
 
     public float AskUserFloat(string messageToDisplay)
     {
-        string outputAsString;
-        outputAsString = AskUserValue(messageToDisplay);
-        try
-        {
-            return float.Parse(outputAsString);
-        }
-        catch (FormatException ex)
-        {
-            string msg;
-            msg = "Impossible de convertir la valeur en entier";
-            throw new FormatException(msg, ex);
-        }
+        return _actions._CommonActions.AskUserFloat.Invoke(messageToDisplay);
     }
     public int AskUserint(string messageToDisplay)
     {
-        string outputAsString;
-        outputAsString = AskUserValue(messageToDisplay);
-        try
-        {
-            return int.Parse(outputAsString);
-        }
-        catch (FormatException ex)
-        {
-            throw new FormatException("Impossible de convertir la valeur en entier", ex);
-        }
+        return _actions._CommonActions.AskUserInt.Invoke(messageToDisplay);
     }
     public string AskUserValue(string messageToDisplay)
     {
-        string output;
-
-        output = MyConsole.AskTypeLine(messageToDisplay);
-
-        return output;
+        string userValue;
+        userValue = _actions._CommonActions.AskUserValue.Invoke(messageToDisplay);
+        return userValue;
     }
 
     internal void RefreshSelection(int selLine)
@@ -235,17 +248,16 @@ public abstract class AMenu : APage, IMenu
         int lineId;
 
         _body = string.Empty;
-        SelectedFunctionId = selLine;
-        lineId = 0;
-        for (int i = 0; i < _commandList.Count(); i++)
-        {
-            string funcTitle = _commandList.ElementAt(i).Key;
 
-            _body += $"{GetTitleWithStyle(lineId, funcTitle, IsSelectedId(lineId))} \n";
-            if (IsSelectedId(lineId))
-            {
-                LoadedDelegate = _commandList.Values.ElementAt(lineId);
-            }
+        _actions.SelectFunction(selLine);
+
+        lineId = 0;
+        for (int i = 0; i < _actions._commandList.Count(); i++)
+        {
+            string funcTitle = _actions._commandList.ElementAt(i).Key;
+
+            _body += $"{GetTitleWithStyle(lineId, funcTitle, isSelectedLine: IsSelectedId(lineId))} \n";
+
             lineId++;
         }
     }
@@ -270,7 +282,7 @@ public abstract class AMenu : APage, IMenu
     }
     public int CountCommands()
     {
-        return this._commandList.Count;
+        return this._actions._commandList.Count;
     }
 
     protected virtual void AddHelloWorld()
