@@ -3,7 +3,7 @@ using System;
 
 namespace VsConsole
 {
-    public interface IMenu : IPage
+    public interface IMenu : IPage, IDisposable
     {
         int SelectedFunctionId { get; } 
 
@@ -11,5 +11,6 @@ namespace VsConsole
         void AddCommand(string name, Action myDelegateFunction);
         void AddFooterMessage(string footerMessage);
         void AddFooterMessage(string errorMessage, ConsoleColor color);
+
     }
 }

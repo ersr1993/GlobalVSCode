@@ -10,7 +10,7 @@ using StandardTools.Utilities;
 
 namespace VsConsole;
 
-public abstract class AMenu : APage, IMenu
+public abstract class AMenu : APage, IMenu, IDisposable
 {
     public int SelectedFunctionId { get { return _actions.SelectedFunctionId; } }
     internal CommandActions _actions { get; private set; }
@@ -68,12 +68,13 @@ public abstract class AMenu : APage, IMenu
             this.DisplayPage();
             ExpectsKeyDown();
         }
+        Dispose();
     }
+    public virtual void Dispose() { }
     private void ExpectsKeyDown()
     {
         try
         {
-            //onKeyDown = InokeNavigation(keyDown);
             _navigator.AskUserKeyDown();
         }
         catch (Exception e)
