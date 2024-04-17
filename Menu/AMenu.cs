@@ -41,6 +41,11 @@ public abstract class AMenu : APage, IMenu, IDisposable
     }
 
     protected abstract void SetupCommands();
+    public void AddShortCommand(ConsoleKey shortCut, Action delegatedAction)
+    {
+        _navigator.AddKeyFuncAssociation(shortCut, delegatedAction);
+        AddCommand(shortCut + delegatedAction.Method.Name, delegatedAction);
+    }
     public void AddCommand(Action delegatedAction)
     {
         string commandLabel;
@@ -59,7 +64,8 @@ public abstract class AMenu : APage, IMenu, IDisposable
     }
     public virtual void Open()
     {
-        this._actions._commandList.Clear();
+        this._actions.ClearActions();
+        //this._actions._commandList.Clear();
         SetupCommands();
 
         while (_navigator.StayInLoop())
@@ -98,45 +104,19 @@ public abstract class AMenu : APage, IMenu, IDisposable
     }
 
     public void _________()
-    { AddCommand("___ ___ ___", () => { }); }
+    {
+        _actions._________();
+    }
     public void AddCommand(string name, Action delegatedAction)
     {
-        string cmdName;
-        cmdName = $"{_actions._commandList.Count}- {name}";
-        _actions._commandList.Add(cmdName, delegatedAction);
-        //_actions.AddCommand(name, delegatedAction);
+        _actions.AddCommand(name, delegatedAction);
     }
     public void AddCommand(string paramName, Action<string> delegatedMethod)
     {
-        //Action FinalAction;
-        //string methodName;
-
-        //FinalAction = () =>
-        //{
-        //    string inputVar;
-        //    inputVar = this.AskUserValue($"veuillez entrer {paramName}: ");
-        //    delegatedMethod(inputVar);
-        //};
-
-        //methodName = delegatedMethod.Method.Name;
-        //_actions._commandList.Add($"{_actions._commandList.Count} - {methodName}", FinalAction);
         _actions.AddCommand(paramName, delegatedMethod);
     }
     public void AddCommand(string paramName, Action<int> delegatedMethod)
     {
-        //Action FinalAction;
-        //string methodName;
-
-        ////FinalAction = () =>
-        ////{
-        ////    int inputVar;
-        ////    inputVar = this.AskUserint($"veuillez entrer {paramName} (int) : ");
-        ////    delegatedMethod(inputVar);
-        ////};
-        //FinalAction = _actionsFactory.WithInputInt(paramName, delegatedMethod);
-
-        //methodName = delegatedMethod.Method.Name;
-        //_actions._commandList.Add($"{_actions._commandList.Count} - {methodName}", FinalAction);
         _actions.AddCommand(paramName, delegatedMethod);
     }
 
@@ -196,18 +176,24 @@ public abstract class AMenu : APage, IMenu, IDisposable
             AddFooterMessage("Empty List");
         }
     }
-    public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false)
+    public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false, int lgth = 15)
     {
         string fullLine;
-        const int lgth = 15;
-        const int margin = -(lgth + 5);
+
+        int margin;
 
         fullLine = string.Empty;
         foreach (string message in messages)
         {
+            if (isStringList)
+            {
+                lgth = message.Length;
+            }
+            margin = (lgth + 5);
             string shortMsg;
 
             shortMsg = message.Substring(0, Math.Min(lgth, message.Length));
+
             if (shortMsg.Length == 0)
             {
                 shortMsg += "¤";
@@ -216,8 +202,12 @@ public abstract class AMenu : APage, IMenu, IDisposable
             {
                 shortMsg += "...";
             }
-
-            fullLine += $"{shortMsg,margin}";
+            //fullLine += $"{shortMsg,m}";
+            fullLine += shortMsg.PadRight(margin);
+            if (isStringList)
+            {
+                fullLine += "\n";
+            }
         }
 
         AddFooterMessage(fullLine, color);
@@ -253,14 +243,28 @@ public abstract class AMenu : APage, IMenu, IDisposable
         _actions.SelectFunction(selLine);
 
         lineId = 0;
-        for (int i = 0; i < _actions._commandList.Count(); i++)
+        for (int i = 0; i < _actions._commandList.Count; i++)
         {
-            string funcTitle = _actions._commandList.ElementAt(i).Key;
+            string funcTitle;
 
+            funcTitle = _actions._commandList.ElementAt(i).Key;
+            //funcTitle = _actions.title(i);
             _body += $"{GetTitleWithStyle(lineId, funcTitle, isSelectedLine: IsSelectedId(lineId))} \n";
 
             lineId++;
         }
+        //for (int i = 0; i < _actions._commandList.Count; i++)
+        //foreach (string t in _actions._commandList.Keys.Where((x) => !x.StartsWith("_")))
+        //{
+        //    string funcTitle;
+
+        //    //funcTitle = _actions._commandList.ElementAt(i).Key;
+        //    funcTitle = t;
+        //    //funcTitle = _actions.title(i);
+        //    _body += $"{GetTitleWithStyle(lineId, funcTitle, isSelectedLine: IsSelectedId(lineId))} \n";
+
+        //    lineId++;
+        //}
     }
     private bool IsSelectedId(int lineId)
     {

@@ -64,21 +64,36 @@ public class NavigationLogic
     }
     private void SelectPosition(ConsoleKey consoleKey) // MENU *
     {
-        int numP;
-        int totalCmds;
+        int index;
+        index = FindIndexOf_OrGetLast(consoleKey);
+        _actions.SelectFunction(index);
+    }
+    private int FindIndexOf_OrGetLast(ConsoleKey consoleKey)
+    {
+        int lastIndex;
         bool isTooBigInt;
+        int actionId;
+        string? desiredKey;
+        int index = 0;
 
-        totalCmds = _actions._commandList.Count;
-        numP = (int)consoleKey;
+        lastIndex = _actions._commandList.Count - 1;
+        isTooBigInt = (int)consoleKey > (lastIndex);
+        actionId = !isTooBigInt ? (int)consoleKey : (lastIndex);
 
-        isTooBigInt = numP > (totalCmds - 1);
+        desiredKey = (from KeyValuePair<string, Action> x in _actions._commandList
+                      where x.Key.StartsWith($"{actionId}")
+                      select x.Key)
+                      .FirstOrDefault()
+                      ?? _actions._commandList.Last().Key;
 
-        if (isTooBigInt)
+
+        index = _actions._commandList.Keys.ToList().IndexOf(desiredKey);
+        if (index > _actions._commandList.Count)
         {
-            numP = (totalCmds - 1);
+            index = lastIndex;
         }
 
-        _actions.SelectFunction(numP);
+        return index;
     }
 
     public bool StayInLoop()
@@ -214,12 +229,34 @@ public class NavigationLogic
         return userAct;
     }
 
+    //private NavigationChoice NavDown()
+    //{
+    //    if (!IsSelected_AtBottom(_actions.SelectedFunctionId))
+    //    {
+    //        _actions.SelectFunction(_actions.SelectedFunctionId + 1);
+    //    }
+
+    //    return NavigationChoice.stay;
+    //}
     private NavigationChoice NavDown()
     {
-        if (!IsSelected_AtBottom(_actions.SelectedFunctionId))
+        int tempCounter = 0;
+        int prevSel = _actions.SelectedFunctionId;
+        bool repeat;
+        do
         {
-            _actions.SelectFunction(_actions.SelectedFunctionId + 1);
-        }
+            if (!IsSelected_AtBottom(_actions.SelectedFunctionId))
+            {
+                tempCounter++;
+                _actions.SelectFunction(prevSel + tempCounter);
+                repeat = _actions.IsNullSelected();
+            }
+            else
+            {
+                _actions.SelectFunction(prevSel);
+                break;
+            }
+        } while (repeat);
 
         return NavigationChoice.stay;
     }
@@ -230,20 +267,43 @@ public class NavigationLogic
         return isBottom;
     }
 
+    //private NavigationChoice NavUp()
+    //{
+    //    bool isTop;
+    //    isTop = IsSelected_AtTop(_actions.SelectedFunctionId);
+    //    if (isTop)
+    //    {
+    //        _actions.SelectFunction(_actions.SelectedFunctionId - 1);
+    //    }
+    //    return NavigationChoice.stay;
+    //}
     private NavigationChoice NavUp()
     {
-        bool isTop;
-        isTop = IsSelected_AtTop(_actions.SelectedFunctionId);
-        if (isTop)
+        int tempCounter = 0;
+        int prevSel = _actions.SelectedFunctionId;
+        bool repeat;
+        do
         {
-            _actions.SelectFunction(_actions.SelectedFunctionId - 1);
-        }
+            if (!IsSelected_AtTop(_actions.SelectedFunctionId))
+            {
+                tempCounter--;
+                _actions.SelectFunction(prevSel + tempCounter);
+                repeat = _actions.IsNullSelected();
+            }
+            else
+            {
+                _actions.SelectFunction(prevSel);
+                break;
+            }
+        } while (repeat);
+
         return NavigationChoice.stay;
     }
+
     private bool IsSelected_AtTop(int selectedId)
     {
         bool isTop;
-        isTop = selectedId > 0;
+        isTop = selectedId == 0;
         return isTop;
     }
 }
