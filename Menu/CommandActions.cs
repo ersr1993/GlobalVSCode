@@ -30,17 +30,14 @@ internal class CommandActions
         string cmdName;
         if (delegatedAction == NULL_ACTION)
         {
-            //SEPARATOR += "_";
             cmdName = $"{SEPARATOR} {sepsCount}";
             sepsCount++;
         }
         else
         {
-            //cmdName = $"{cmdCounts}- {name}";
             cmdName = $"{cmdCounts}- {name}";
             cmdCounts++;
         }
-        //_actions._commandList.Add(cmdName, delegatedAction);
 
         _commandList.Add(cmdName, delegatedAction);
     }
@@ -57,7 +54,7 @@ internal class CommandActions
         };
 
         methodName = delegatedMethod.Method.Name;
-        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+        AddCommand(methodName, FinalAction);
     }
     public void AddCommand(string paramName, Action<int> delegatedMethod)
     {
@@ -72,7 +69,7 @@ internal class CommandActions
         };
 
         methodName = delegatedMethod.Method.Name;
-        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+        AddCommand(methodName, FinalAction);
     }
 
     public void AddCommand(string methodName, string paramName, Action<string> delegatedMethod)
@@ -81,17 +78,13 @@ internal class CommandActions
         string msg;
         msg = $"veuillez entrer {paramName}: ";
         FinalAction = () => _CommonActions.AskUserValue.Invoke(msg);
-        _commandList.Add($"{_commandList.Count} - {methodName}", FinalAction);
+
+        AddCommand(methodName, FinalAction);
     }
     public void AddCommand(string methodName, Action<string> delegatedMethod, string inputValue)
     {
         Action FinalAction;
         FinalAction = () => delegatedMethod(inputValue);
-        //_commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
-
-        //_commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
-        //_commandList.Add($"{_commandList.Count.ToString()} - {methodName}", FinalAction);
-        //string name = 
         AddCommand(methodName, FinalAction);
     }
     public void AddCommand(Action<string> delegatedMethod, string inputValue)
@@ -100,7 +93,6 @@ internal class CommandActions
         string name;
         name = delegatedMethod.Method.Name;
         FinalAction = () => delegatedMethod(inputValue);
-        //_commandList.Add($"{_commandList.Count} - {name}", FinalAction);
         AddCommand(name, FinalAction);
     }
 

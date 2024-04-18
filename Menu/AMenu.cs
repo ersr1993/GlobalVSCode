@@ -7,6 +7,7 @@ using VsConsole.Logic;
 using StandardTools;
 using StandardTools.Reflexions;
 using StandardTools.Utilities;
+using System.Diagnostics;
 
 namespace VsConsole;
 
@@ -175,6 +176,15 @@ public abstract class AMenu : APage, IMenu, IDisposable
         {
             AddFooterMessage("Empty List");
         }
+    }
+    public void AddFooterMessage<T>(T singleObject)
+    {
+        List<T> asList;
+        asList = new List<T>()
+        {
+            singleObject
+        };
+        AddFooterMessage<T>(asList);
     }
     public void AddFooterMessage(IEnumerable<string> messages, ConsoleColor color = _FOOTER_DEFAULTCOLOR, bool isStringList = false, int lgth = 15)
     {

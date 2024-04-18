@@ -86,7 +86,6 @@ public class NavigationLogic
                       .FirstOrDefault()
                       ?? _actions._commandList.Last().Key;
 
-
         index = _actions._commandList.Keys.ToList().IndexOf(desiredKey);
         if (index > _actions._commandList.Count)
         {
