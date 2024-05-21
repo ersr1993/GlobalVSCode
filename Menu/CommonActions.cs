@@ -1,7 +1,7 @@
 ﻿using System;
 using VsConsole.Logic;
 
-namespace VsConsole;
+namespace VsConsole.Menu;
 
 internal class CommonActions
 {

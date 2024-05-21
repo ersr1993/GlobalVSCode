@@ -8,6 +8,7 @@ using StandardTools;
 using StandardTools.Reflexions;
 using StandardTools.Utilities;
 using System.Diagnostics;
+using VsConsole.Menu;
 
 namespace VsConsole;
 
@@ -37,7 +38,7 @@ public abstract class AMenu : APage, IMenu, IDisposable
         diggingInterface = new DiggingObject(diggingTypes);
 
         _actions = new CommandActions();
-        _navigator = new NavigationLogic(this._actions);
+        _navigator = new NavigationLogic(_actions);
         _dtU = new DataTableUtilities(diggingInterface);
     }
 
@@ -60,19 +61,19 @@ public abstract class AMenu : APage, IMenu, IDisposable
         AddCommand(commandLabel, () =>
         {
             string testOutput = TestFunc();
-            this.AddFooterMessage(testOutput);
+            AddFooterMessage(testOutput);
         });
     }
     public virtual void Open()
     {
-        this._actions.ClearActions();
+        _actions.ClearActions();
         //this._actions._commandList.Clear();
         SetupCommands();
 
         while (_navigator.StayInLoop())
         {
             RefreshSelection(SelectedFunctionId);
-            this.DisplayPage();
+            DisplayPage();
             ExpectsKeyDown();
         }
         Dispose();
@@ -94,7 +95,7 @@ public abstract class AMenu : APage, IMenu, IDisposable
         string errorMessage;
         errorMessage = $"\n \n  *** *** *** ERROR : *** *** *** \n " +
                        $"-  {e.Message} \n\n ";
-        this.AddFooterMessage(errorMessage, ConsoleColor.Red);
+        AddFooterMessage(errorMessage, ConsoleColor.Red);
 #if DEBUG
         string fullInfo;
         fullInfo = $" \n - StackTrace : \n  " +
@@ -135,18 +136,10 @@ public abstract class AMenu : APage, IMenu, IDisposable
     public void AddCommand(string methodName, Action<string> delegatedMethod, string inputValue)
     {
         _actions.AddCommand(methodName, delegatedMethod, inputValue);
-        //Action FinalAction;
-        //FinalAction = () => delegatedMethod(inputValue);
-        //_actions._commandList.Add($"{_actions._commandList.Count.ToString()} - {methodName}", FinalAction);
     }
     public void AddCommand(Action<string> delegatedMethod, string inputValue)
     {
         _actions.AddCommand(delegatedMethod, inputValue);
-        //Action FinalAction;
-        //string name;
-        //name = delegatedMethod.Method.Name;
-        //FinalAction = () => delegatedMethod(inputValue);
-        //_actions._commandList.Add($"{_actions._commandList.Count} - {name}", FinalAction);
     }
 
 
@@ -169,7 +162,7 @@ public abstract class AMenu : APage, IMenu, IDisposable
         list = objects.ToList();
         if (list.Any())
         {
-            dt = _dtU.ToDataTable_Interface<T>(list);
+            dt = _dtU.ToDataTable_Interface(list);
             AddFooterMessage(dt);
         }
         else
@@ -177,7 +170,7 @@ public abstract class AMenu : APage, IMenu, IDisposable
             AddFooterMessage("Empty List");
         }
     }
-    public void AddFooterMessage<T>(T singleObject)
+    public void AddFooterMessageO<T>(T singleObject) where T : class
     {
         List<T> asList;
         asList = new List<T>()
@@ -199,7 +192,7 @@ public abstract class AMenu : APage, IMenu, IDisposable
             {
                 lgth = message.Length;
             }
-            margin = (lgth + 5);
+            margin = lgth + 5;
             string shortMsg;
 
             shortMsg = message.Substring(0, Math.Min(lgth, message.Length));
@@ -297,16 +290,16 @@ public abstract class AMenu : APage, IMenu, IDisposable
     }
     public int CountCommands()
     {
-        return this._actions._commandList.Count;
+        return _actions._commandList.Count;
     }
 
     protected virtual void AddHelloWorld()
     {
-        this.AddCommand(HelloWorld);
+        AddCommand(HelloWorld);
     }
     private void HelloWorld()
     {
-        this.AddFooterMessage("Hello World !", ConsoleColor.Green);
+        AddFooterMessage("Hello World !", ConsoleColor.Green);
     }
     protected virtual void DisplayListSubItems<T>(IEnumerable<T> items, int deckCount = 50)
     {
@@ -323,19 +316,25 @@ public abstract class AMenu : APage, IMenu, IDisposable
         userWill = int.MaxValue;
         while (userWill > resCountTranche - 1 && userWill != 0)
         {
-            userWill = this.AskUserint(msg);
+            userWill = AskUserint(msg);
         };
 
         int lastSliceCount;
         lastSliceCount = deckCount;
         if (userWill == resCountTranche)
         {
-            lastSliceCount = count - (resCountTranche * deckCount);
+            lastSliceCount = count - resCountTranche * deckCount;
         }
 
-        res = items.ToList<T>().GetRange(userWill * deckCount, lastSliceCount);
-        this.AddFooterMessage($"Tranche demandée :{userWill * deckCount} : {userWill * deckCount + lastSliceCount - 1}:", ConsoleColor.DarkBlue);
-        this.AddFooterMessage(res);
+        res = items.ToList().GetRange(userWill * deckCount, lastSliceCount);
+        AddFooterMessage($"Tranche demandée :{userWill * deckCount} : {userWill * deckCount + lastSliceCount - 1}:", ConsoleColor.DarkBlue);
+        AddFooterMessage(res);
     }
 
+    protected void Ok()
+    {
+        //string msg;
+        //msg = msg ?? string.Empty;
+        AddFooterMessage("Ok");
+    }
 }

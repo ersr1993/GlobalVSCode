@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace VsConsole;
+namespace VsConsole.Menu;
 internal class CommandActions
 {
 
@@ -98,7 +98,7 @@ internal class CommandActions
 
     internal void LoadSelectedDelegateSelectedFunc(int lineId)
     {
-        LoadedDelegate = (_commandList.Values.Count > 0)
+        LoadedDelegate = _commandList.Values.Count > 0
                         ? _commandList.Values.ElementAt(lineId)
                         : null;
     }
@@ -117,7 +117,7 @@ internal class CommandActions
     {
         bool output;
         //output = _commandList.ElementAt(this.SelectedFunctionId).Key.StartsWith(SEPARATOR);
-        output = _commandList.ElementAt(this.SelectedFunctionId).Value == NULL_ACTION;
+        output = _commandList.ElementAt(SelectedFunctionId).Value == NULL_ACTION;
         return output;
     }
 

@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VsConsole.Logic;
 
-namespace VsConsole.Logic;
+namespace VsConsole.Menu;
 
 public class NavigationLogic
 {
@@ -73,12 +74,12 @@ public class NavigationLogic
         int lastIndex;
         bool isTooBigInt;
         int actionId;
-        string? desiredKey;
+        string desiredKey;
         int index = 0;
 
         lastIndex = _actions._commandList.Count - 1;
-        isTooBigInt = (int)consoleKey > (lastIndex);
-        actionId = !isTooBigInt ? (int)consoleKey : (lastIndex);
+        isTooBigInt = (int)consoleKey > lastIndex;
+        actionId = !isTooBigInt ? (int)consoleKey : lastIndex;
 
         desiredKey = (from KeyValuePair<string, Action> x in _actions._commandList
                       where x.Key.StartsWith($"{actionId}")
@@ -145,7 +146,7 @@ public class NavigationLogic
 
         IEnumerable<int> range;
 
-        getNumpadKey = (int i) =>
+        getNumpadKey = (i) =>
        {
            ConsoleKey output;
            Type keyType;
@@ -158,7 +159,7 @@ public class NavigationLogic
            return output;
        };
 
-        getNavChoice = (int i) =>
+        getNavChoice = (i) =>
         {
             Func<NavigationChoice> output;
             output = () => Nav((ConsoleKey)i);

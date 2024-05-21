@@ -5,7 +5,7 @@ namespace VsConsole
 {
     public interface IMenu : IPage, IDisposable
     {
-        int SelectedFunctionId { get; } 
+        int SelectedFunctionId { get; }
 
         void Open();
         void AddCommand(string name, Action myDelegateFunction);

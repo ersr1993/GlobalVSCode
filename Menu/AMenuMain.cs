@@ -40,7 +40,7 @@ namespace VsConsole
                 "   monMenuA,\n" +
                 "   monMenuB\n"
                 + $"{chevronClose}";
-            this.AddFooterMessage(msg, ConsoleColor.Red);
+            AddFooterMessage(msg, ConsoleColor.Red);
         }
     }
 }

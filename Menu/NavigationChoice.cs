@@ -1,4 +1,4 @@
-﻿namespace VsConsole.Logic;
+﻿namespace VsConsole.Menu;
 
 internal enum NavigationChoice
 {
